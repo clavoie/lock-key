@@ -1,7 +1,18 @@
 (ns lock-key.core-test
-  (:use clojure.test
-        lock-key.core))
+  (:require
+    [lock-key.core :refer :all]
+    [clojure.test :refer :all])
+  (:refer-clojure :exclude [key]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(def key "test key")
+(def value "test value")
+
+(deftest test-encrypt
+  (is (not (= value 
+              (String. (encrypt value key))))))
+
+(deftest test-decrypt
+  (is (= value 
+         (String. (decrypt (encrypt value key) key)))))
+
+
