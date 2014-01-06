@@ -1,16 +1,15 @@
 (ns lock-key.core
+  (:require
+    [charset-bytes.core :refer [utf8-bytes]])
   (:import 
     [javax.crypto Cipher KeyGenerator SecretKey]
     [javax.crypto.spec SecretKeySpec]
     [java.security SecureRandom]))
 
-(defn- get-bytes [s]
-  (.getBytes s "UTF-8"))
-
 (defn- get-raw-key [seed]
   (let [keygen (KeyGenerator/getInstance "AES")
         sr (SecureRandom/getInstance "SHA1PRNG")]
-    (.setSeed sr (get-bytes seed))
+    (.setSeed sr (utf8-bytes seed))
     (.init keygen 128 sr)
     (.. keygen generateKey getEncoded)))
 
@@ -21,7 +20,7 @@
     cipher))
 
 (defn encrypt [value key]
-  (let [bytes (get-bytes value)
+  (let [bytes (utf8-bytes value)
         cipher (get-cipher Cipher/ENCRYPT_MODE key)]
     (.doFinal cipher bytes)))
 
