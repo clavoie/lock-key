@@ -19,11 +19,20 @@
     (.init cipher mode key-spec)
     cipher))
 
-(defn encrypt [value key]
+(defn encrypt 
+  "Symmetrically encrypts value with key, such that it can be
+   decrypted later with (decrypt). The value and key parameters are
+   expected to be a String. Returns byte[]"
+  [value key]
   (let [bytes (utf8-bytes value)
         cipher (get-cipher Cipher/ENCRYPT_MODE key)]
     (.doFinal cipher bytes)))
 
-(defn decrypt [value key]
+(defn decrypt 
+  "Decrypts a value which has been encrypted via a call to
+   (encrypt) using key. The value parameter is expected to be a 
+   byte[] and the key parameter is expected to be a String. 
+   Returns byte[]"
+  [value key]
   (let [cipher (get-cipher Cipher/DECRYPT_MODE key)]
     (.doFinal cipher value)))
