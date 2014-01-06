@@ -24,6 +24,8 @@ user=> (def secret (encrypt "one two three" lock))
 #'user/secret
 user=> secret
 #<byte[] [B@47bd871c>
+user=> (String. secret)
+"=\r¦-?)q{¯Æa?\f?=#"
 user=> (decrypt secret lock)
 #<byte[] [B@63017675>
 user=> (String. (decrypt secret lock))
