@@ -1,7 +1,7 @@
 lock-key
 ========
 
-Clojure wrappers around Java encryption
+Symmetric encryption wrappers for Clojure
 
 ## Installation
 
