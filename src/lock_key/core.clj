@@ -64,9 +64,9 @@
    to use when decrypting. The remainder is the encrypted data."
   ^bytes [^bytes value ^String key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
-        iv-bytes (into-array Byte/TYPE iv-bytes)
+        iv-bytes       (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
-        cipher (get-cipher Cipher/DECRYPT_MODE key iv-bytes)]
+        cipher         (get-cipher Cipher/DECRYPT_MODE key iv-bytes)]
     (.doFinal cipher encrypted-data)))
 
 
