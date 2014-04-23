@@ -8,7 +8,7 @@ Symmetric encryption wrappers for Clojure
 Add the following dependency to your `project.clj` file:
 
 ```
-[lock-key "1.0.0"]
+[lock-key "1.1.0"]
 ```
 
 ## Usage

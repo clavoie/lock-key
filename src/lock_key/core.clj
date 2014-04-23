@@ -31,14 +31,15 @@
     cipher))
 
 
-(defn ^bytes encrypt 
+(defn encrypt 
   "Symmetrically encrypts value with key, such that it can be
    decrypted later with (decrypt). The value may be either a 
    UTF-8 String or a byte array. Key should be a String. 
 
    Returns byte[]. The first 16 bytes of the returned value
    are the initialization vector. The remainder is the encrypted data."
-  [value ^String key]
+  ^bytes [value ^String key]
+  (assert (not (empty? key)))
   (let [bytes (if (string? value)
                 ^bytes (utf8-bytes value)
                 value)
@@ -53,7 +54,7 @@
                                   (.doFinal cipher bytes)))))
 
 
-(defn ^bytes decrypt 
+(defn decrypt
   "Decrypts a value which has been encrypted via a call to
    (encrypt) using key. The value parameter is expected to be a 
    byte[] and the key parameter is expected to be a String. 
@@ -61,7 +62,7 @@
 
    The first 16 bytes of the input value is the initialization vector 
    to use when decrypting. The remainder is the encrypted data."
-  [^bytes value ^String key]
+  ^bytes [^bytes value ^String key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
         iv-bytes (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
