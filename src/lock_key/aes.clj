@@ -16,7 +16,7 @@
     (.init keygen 128 sr)
     (.. keygen generateKey getEncoded)))
 
-(defn- get-cipher [mode seed]
+(defn-  get-cipher [^long mode seed]
   (let [key-spec (SecretKeySpec. (get-raw-key seed) "AES")
         cipher (Cipher/getInstance "AES")]
     (.init cipher mode key-spec)
@@ -26,16 +26,18 @@
   "Symmetrically encrypts value with key, such that it can be
    decrypted later with (decrypt). The value and key parameters are
    expected to be a String. Returns byte[]"
+  ^bytes
   [value key]
-  (let [bytes (utf8-bytes value)
+  (let [b (utf8-bytes value)
         cipher (get-cipher Cipher/ENCRYPT_MODE key)]
-    (.doFinal cipher bytes)))
+    (.doFinal ^Cipher cipher ^bytes b)))
 
 (defn decrypt
   "Decrypts a value which has been encrypted via a call to
    (encrypt) using key. The value parameter is expected to be a
    byte[] and the key parameter is expected to be a String.
    Returns byte[]"
-  [value key]
+  ^bytes
+  [^bytes value key]
   (let [cipher (get-cipher Cipher/DECRYPT_MODE key)]
-    (.doFinal cipher value)))
+    (.doFinal ^Cipher cipher value)))
