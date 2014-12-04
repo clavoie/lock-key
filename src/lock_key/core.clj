@@ -10,8 +10,6 @@
     [javax.crypto.spec SecretKeySpec IvParameterSpec]
     [java.security SecureRandom]))
 
-(set! *warn-on-reflection* true)
-
 (defn- get-raw-key [^String seed]
   (let [keygen (KeyGenerator/getInstance "AES")
         sr     (SecureRandom/getInstance "SHA1PRNG")]
@@ -67,9 +65,8 @@
         cipher         (get-cipher Cipher/DECRYPT_MODE key iv-bytes)]
     (.doFinal cipher encrypted-data)))
 
-
-(defn bytes-to-string
-  "Utility for cases where the byte array returned by decrypt is to be converted into a String."
-  [^bytes value]
-  (apply str (map char value)))
+(defn decrypt-as-str
+  ""
+  [value key]
+  (String. (decrypt value key)))
 
