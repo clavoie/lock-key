@@ -4,28 +4,11 @@
    Implements symmetric encryption in AES/CBC/PKCS5Padding mode.
    "
   (:require
-    [charset.bytes :refer [utf8-bytes]])
+   [charset.bytes :refer [utf8-bytes]]
+   [lock-key.private.core :as private])
   (:import
-    [javax.crypto Cipher KeyGenerator SecretKey]
-    [javax.crypto.spec SecretKeySpec IvParameterSpec]
+    [javax.crypto Cipher]
     [java.security SecureRandom]))
-
-(defn- get-raw-key [^String seed]
-  (let [keygen (KeyGenerator/getInstance "AES")
-        sr     (SecureRandom/getInstance "SHA1PRNG")]
-    (.setSeed sr ^bytes (utf8-bytes seed))
-    (.init keygen 128 sr)
-    (.. keygen generateKey getEncoded)))
-
-
-(defn- ^Cipher get-cipher
-  [mode ^String seed ^bytes iv-bytes]
-  (let [key-spec (SecretKeySpec. (get-raw-key seed) "AES")
-        iv-spec  (IvParameterSpec. iv-bytes)
-        cipher   (Cipher/getInstance "AES/CBC/PKCS5Padding")]
-    (.init cipher (int mode) key-spec iv-spec)
-    cipher))
-
 
 (defn encrypt
   "Symmetrically encrypts value with key, such that it can be
@@ -45,7 +28,7 @@
         iv-bytes (byte-array 16)
         _ (.nextBytes sr iv-bytes)
 
-        cipher (get-cipher Cipher/ENCRYPT_MODE encryption-key iv-bytes)]
+        cipher (private/get-cipher Cipher/ENCRYPT_MODE encryption-key iv-bytes)]
     (into-array Byte/TYPE (concat iv-bytes
                                   (.doFinal cipher value-bytes)))))
 
@@ -61,7 +44,7 @@
   (let [[iv-bytes encrypted-data] (split-at 16 value)
         iv-bytes       (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
-        cipher         (get-cipher Cipher/DECRYPT_MODE encryption-key iv-bytes)]
+        cipher         (private/get-cipher Cipher/DECRYPT_MODE encryption-key iv-bytes)]
     (.doFinal cipher encrypted-data)))
 
 (defn decrypt-as-str
