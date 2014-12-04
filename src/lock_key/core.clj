@@ -2,12 +2,10 @@
   "Wrapper around the Java cryptography extensions in javax.crypto.
 
    Implements symmetric encryption in AES/CBC/PKCS5Padding mode.
-
-   The user calls (encrypt \"plaintext\" \"key\") and gets 
    "
   (:require
-    [charset-bytes.core :refer [utf8-bytes]])
-  (:import 
+    [charset.bytes :refer [utf8-bytes]])
+  (:import
     [javax.crypto Cipher KeyGenerator SecretKey]
     [javax.crypto.spec SecretKeySpec IvParameterSpec]
     [java.security SecureRandom]))
@@ -31,10 +29,10 @@
     cipher))
 
 
-(defn encrypt 
+(defn encrypt
   "Symmetrically encrypts value with key, such that it can be
-   decrypted later with (decrypt). The value may be either a 
-   UTF-8 String or a byte array. Key should be a String. 
+   decrypted later with (decrypt). The value may be either a
+   UTF-8 String or a byte array. Key should be a String.
 
    Returns byte[]. The first 16 bytes of the returned value
    are the initialization vector. The remainder is the encrypted data."
@@ -48,7 +46,7 @@
         ;; Create a random initialization vector:
         iv-bytes (byte-array 16)
         _ (.nextBytes sr iv-bytes)
-        
+
         cipher (get-cipher Cipher/ENCRYPT_MODE key iv-bytes)]
     (into-array Byte/TYPE (concat iv-bytes
                                   (.doFinal cipher bytes)))))
@@ -56,11 +54,11 @@
 
 (defn decrypt
   "Decrypts a value which has been encrypted via a call to
-   (encrypt) using key. The value parameter is expected to be a 
-   byte[] and the key parameter is expected to be a String. 
+   (encrypt) using key. The value parameter is expected to be a
+   byte[] and the key parameter is expected to be a String.
    Returns byte[].
 
-   The first 16 bytes of the input value is the initialization vector 
+   The first 16 bytes of the input value is the initialization vector
    to use when decrypting. The remainder is the encrypted data."
   ^bytes [^bytes value ^String key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
