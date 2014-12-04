@@ -34,9 +34,9 @@
 
    Returns byte[]. The first 16 bytes of the returned value
    are the initialization vector. The remainder is the encrypted data."
-  ^bytes [value ^String key]
-  (assert (not (empty? key)))
-  (let [bytes (if (string? value)
+  ^bytes [value ^String encryption-key]
+  (assert (not (empty? encryption-key)))
+  (let [value-bytes (if (string? value)
                 ^bytes (utf8-bytes value)
                 value)
         sr (SecureRandom/getInstance "SHA1PRNG")
@@ -45,10 +45,9 @@
         iv-bytes (byte-array 16)
         _ (.nextBytes sr iv-bytes)
 
-        cipher (get-cipher Cipher/ENCRYPT_MODE key iv-bytes)]
+        cipher (get-cipher Cipher/ENCRYPT_MODE encryption-key iv-bytes)]
     (into-array Byte/TYPE (concat iv-bytes
-                                  (.doFinal cipher bytes)))))
-
+                                  (.doFinal cipher value-bytes)))))
 
 (defn decrypt
   "Decrypts a value which has been encrypted via a call to
@@ -58,15 +57,15 @@
 
    The first 16 bytes of the input value is the initialization vector
    to use when decrypting. The remainder is the encrypted data."
-  ^bytes [^bytes value ^String key]
+  ^bytes [^bytes value ^String encryption-key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
         iv-bytes       (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
-        cipher         (get-cipher Cipher/DECRYPT_MODE key iv-bytes)]
+        cipher         (get-cipher Cipher/DECRYPT_MODE encryption-key iv-bytes)]
     (.doFinal cipher encrypted-data)))
 
 (defn decrypt-as-str
   ""
-  [value key]
-  (String. (decrypt value key)))
+  [value encryption-key]
+  (String. (decrypt value encryption-key)))
 
