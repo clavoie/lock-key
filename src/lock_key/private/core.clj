@@ -14,8 +14,11 @@
     (.init keygen 128 sr)
     (.. keygen generateKey getEncoded)))
 
-(defn ^Cipher get-cipher
-  [mode ^String seed ^bytes iv-bytes]
+(defn get-cipher
+  ^Cipher
+  [        mode
+   ^String seed
+   ^bytes  iv-bytes]
   (let [key-spec (SecretKeySpec. (get-raw-key seed) "AES")
         iv-spec  (IvParameterSpec. iv-bytes)
         cipher   (Cipher/getInstance "AES/CBC/PKCS5Padding")]
