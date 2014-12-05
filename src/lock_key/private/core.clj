@@ -17,6 +17,14 @@
   [object]
   (= byte-array-class (type object)))
 
+(defn get-iv-bytes
+  "Initializes and returns a random initialization vector byte[]"
+  []
+  (let [sr (SecureRandom/getInstance "SHA1PRNG")
+        iv-bytes (byte-array 16)]
+    (.nextBytes sr iv-bytes)
+    iv-bytes))
+
 (defn get-raw-key
   "Returns an AES SecretKey encoded as a byte[]
 

@@ -1,23 +1,26 @@
 (ns lock-key.core-test
   (:require
-    [lock-key.core :refer :all]
-    [clojure.test :refer :all])
-  (:refer-clojure :exclude [key]))
+   [lock-key.core :refer :all]
+   [lock-key.private.core :as private]
+   [clojure.test :refer :all]))
 
-(def key "test key")
+(def secret "test key")
 (def value "test value")
 
 (deftest test-encrypt
-  (testing "value encrypted"
-    (is (not (= value
-                (String. (encrypt value key))))))
-  (testing "invalid value"
-    (is (thrown? Exception (encrypt 1 key))))
-  (testing "invalid key"
-    (is (thrown? Exception (encrypt value "")))))
+  (is (not (= value  (String. (encrypt value secret)))))
+  (is (private/byte-array?  (encrypt value secret)))
+  (is (thrown? Exception (encrypt :invalid secret)))
+  (is (thrown? Exception (encrypt value :invalid)))
+  (is (thrown? Exception (encrypt value ""))))
 
 (deftest test-decrypt
-  (is (= value
-         (String. (decrypt (encrypt value key) key)))))
+  (is (= value (String. (decrypt (encrypt value secret) secret))))
+  (is (private/byte-array? (decrypt (encrypt value secret) secret)))
+  (is (thrown? Exception (decrypt :invalid secret)))
+  (is (thrown? Exception (decrypt (encrypt value secret) :invalid))))
 
-
+(deftest test-decrypt-as-str
+  (is (= value (decrypt-as-str (encrypt value secret) secret)))
+  (is (thrown? Exception (decrypt-as-str :invalid secret)))
+  (is (thrown? Exception (decrypt-as-str (encrypt value secret) :invalid))))
