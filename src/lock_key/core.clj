@@ -1,8 +1,6 @@
 (ns lock-key.core
-  "Wrapper around the Java cryptography extensions in javax.crypto.
-
-   Implements symmetric encryption in AES/CBC/PKCS5Padding mode.
-   "
+  "Wrapper around the Java cryptography extensions in javax.crypto. Implements
+  symmetric encryption in AES/CBC/PKCS5Padding mode."
   (:require
    [charset.bytes :refer [utf8-bytes]]
    [lock-key.private.core :as private])
@@ -45,7 +43,7 @@
   value          - (byte[]) the value to decrypt
   encryption-key - (String) the key with which the value was encrypted"
   ^bytes
-  [^bytes value ^String encryption-key]
+  [value encryption-key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
         iv-bytes       (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
