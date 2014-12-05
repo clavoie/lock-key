@@ -1,4 +1,4 @@
-(defproject lock-key "1.1.0-SNAPSHOT"
+(defproject lock-key "1.1.0"
   :description "Symmetric encryption wrappers for Clojure"
   :url "https://github.com/clavoie/lock-key"
   :license {:name "Eclipse Public License"
