@@ -8,11 +8,16 @@
 (def value "test value")
 
 (deftest test-encrypt
-  (is (not (= value 
-              (String. (encrypt value key))))))
+  (testing "value encrypted"
+    (is (not (= value
+                (String. (encrypt value key))))))
+  (testing "invalid value"
+    (is (thrown? Exception (encrypt 1 key))))
+  (testing "invalid key"
+    (is (thrown? Exception (encrypt value "")))))
 
 (deftest test-decrypt
-  (is (= value 
+  (is (= value
          (String. (decrypt (encrypt value key) key)))))
 
 

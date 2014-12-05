@@ -4,11 +4,10 @@
   (:import [javax.crypto Cipher]
            [java.security SecureRandom]))
 
-(def byte-array-class (Class/forName "[B"))
-
-(defn- byte-array?
-  [object]
-  (= byte-array-class (type object)))
+(deftest byte-array?-test
+  (is (byte-array? (byte-array 10)))
+  (is (not (byte-array? nil)))
+  (is (not (byte-array? (seq "hey")))))
 
 (deftest get-raw-key-test
   (testing "no-empty secret key generated"

@@ -11,16 +11,23 @@
     [java.security SecureRandom]))
 
 (defn encrypt
-  "Symmetrically encrypts value with key, such that it can be
-   decrypted later with (decrypt). The value may be either a
-   UTF-8 String or a byte array. Key should be a String.
+  "Symmetrically encrypts value with encryption-key, such that it can be
+  decrypted later with (decrypt). Returns byte[]. The first 16 bytes of
+  the returned value are the initialization vector. The remainder is the encrypted data.
 
-   Returns byte[]. The first 16 bytes of the returned value
-   are the initialization vector. The remainder is the encrypted data."
-  ^bytes [value ^String encryption-key]
-  (assert (not (empty? encryption-key)))
+  value           - (String/byte[]) the value to encrypt. Throws IllegalArgumentException
+                    if value is an invalid type.
+  encryption-key  - (String) the key with which to encrypt value with. Throws
+                    IllegalArgumentException if encryption-key is empty"
+  ^bytes
+  [value ^String encryption-key]
+  (if (not (or (string? value)
+               (private/byte-array? value)))
+    (throw (IllegalArgumentException. "Argument [value] must be of type String or byte[]")))
+  (if (empty? encryption-key)
+    (throw (IllegalArgumentException. "Argument [encryption-key] must not be empty")))
   (let [value-bytes (if (string? value)
-                ^bytes (utf8-bytes value)
+                (utf8-bytes value)
                 value)
         sr (SecureRandom/getInstance "SHA1PRNG")
 
@@ -40,7 +47,8 @@
 
    The first 16 bytes of the input value is the initialization vector
    to use when decrypting. The remainder is the encrypted data."
-  ^bytes [^bytes value ^String encryption-key]
+  ^bytes
+  [^bytes value ^String encryption-key]
   (let [[iv-bytes encrypted-data] (split-at 16 value)
         iv-bytes       (into-array Byte/TYPE iv-bytes)
         encrypted-data (into-array Byte/TYPE encrypted-data)
