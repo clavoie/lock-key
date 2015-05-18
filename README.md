@@ -5,10 +5,6 @@ Symmetric encryption wrappers for Clojure.
 
 Implements symmetric encryption in AES/CBC/PKCS5Padding mode.
 
-**Note to users of v1.0.0**
-
-v1.1.0 of lock-key changes the encryption algorithm used by v1.0.0. If you have any data encrypted with v1.0.0 the v1.1.0 lock-key.core fns will not be able to decrypt it. The v1.0.0 fns have been moved into the `lock-key.aes` namespace if you wish to use them alongside v1.1.0, and will be removed in a future release.
-
 ## Installation
 
 Add the following dependency to your `project.clj` file:
@@ -52,7 +48,7 @@ user=> (decrypt-as-str secret lock)
 
 ## License
 
-Copyright © 2014 Chris LaVoie
+Copyright © 2014-2015 Chris LaVoie
 
 Distributed under the Eclipse Public License, the same as Clojure.
 
