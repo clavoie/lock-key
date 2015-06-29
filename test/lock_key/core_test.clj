@@ -24,3 +24,16 @@
   (is (= value (decrypt-as-str (encrypt value secret) secret)))
   (is (thrown? Exception (decrypt-as-str :invalid secret)))
   (is (thrown? Exception (decrypt-as-str (encrypt value secret) :invalid))))
+
+(deftest test-encrypt-websafe
+  (is (not (= value  (String. (encrypt-as-websafe value secret)))))
+  (is (string?  (encrypt-as-websafe value secret)))
+  (is (thrown? Exception (encrypt-as-websafe :invalid secret)))
+  (is (thrown? Exception (encrypt-as-websafe value :invalid)))
+  (is (thrown? Exception (encrypt-as-websafe value ""))))
+
+(deftest test-decrypt-as-websafe
+  (is (= value (decrypt-from-websafe (encrypt-as-websafe value secret) secret)))
+  (is (thrown? Exception (decrypt-from-websafe :invalid secret)))
+  (is (thrown? Exception (decrypt-from-websafe (encrypt-as-websafe value secret) :invalid))))
+
