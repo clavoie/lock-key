@@ -60,13 +60,13 @@
   [value encryption-key]
   (String. (decrypt value encryption-key)))
 
-(defn encrypt-as-websafe
+(defn encrypt-as-base64
   "Same as encrypt, but returns a base64 encoded string.  This makes the results
   web friendly, so that you can use easily use them with things like JSON"
   [value encryption-key]
   (String. (base64/encode-bytes (encrypt value encryption-key))))
 
-(defn decrypt-from-websafe
+(defn decrypt-from-base64
   "Same as decrypt, but accepts a base64 encoded string as input."
   [value encryption-key]
   (String. (decrypt (base64/decode-bytes (.getBytes value)) encryption-key)))
