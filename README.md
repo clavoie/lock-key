@@ -14,7 +14,7 @@ Add the following dependency to your `project.clj` file:
 ## Usage
 
 ```clojure
-user=> (require ['lock-key.core :refer ['decrypt 'decrypt-as-str 'encrypt]])
+user=> (require ['lock-key.core :refer ['decrypt 'decrypt-as-str 'encrypt 'encrypt-as-websafe 'decrypt-from-websafe]])
 nil
 
 user=> (def secret "one two three")
@@ -39,6 +39,15 @@ user=> (String. (decrypt secret lock))
 "one two three"
 
 user=> (decrypt-as-str secret lock)
+"one two three"
+
+user=> (def secret (encrypt-as-websafe "one two three" lock))
+#'user/secret
+
+user=> secret
+"UFD3vAmm5Rc3xPnXcQUJs3yO3069NtlzjJoRA2egyyo="
+
+user=> (decrypt-from-websafe secret lock)
 "one two three"
 ```
 
