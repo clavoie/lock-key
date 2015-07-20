@@ -14,7 +14,8 @@ Add the following dependency to your `project.clj` file:
 ## Usage
 
 ```clojure
-user=> (require ['lock-key.core :refer ['decrypt 'decrypt-as-str 'encrypt 'encrypt-as-websafe 'decrypt-from-websafe]])
+user=> (require ['lock-key.core :refer ['decrypt 'decrypt-as-str 'decrypt-from-base64
+                                        'encrypt 'encrypt-as-base64]])
 nil
 
 user=> (def secret "one two three")
@@ -23,31 +24,31 @@ user=> (def secret "one two three")
 user=> (def lock "password")
 #'user/lock
 
-user=> (def secret (encrypt "one two three" lock))
-#'user/secret
+user=> (def encrypted-secret (encrypt secret lock))
+#'user/encrypted-secret
 
-user=> secret
+user=> encrypted-secret
 #<byte[] [B@7ec2c524>
 
-user=> (String. ^bytes secret)
+user=> (String. ^bytes encrypted-secret)
 " ═d╙DYÄ/\\▀.)δúYªí↓\rvk═(,ô▼αæ9╞↑?"
 
-user=> (decrypt secret lock)
+user=> (decrypt encrypted-secret lock)
 #<byte[] [B@1b3f8998>
 
-user=> (String. (decrypt secret lock))
+user=> (String. (decrypt encrypted-secret lock))
 "one two three"
 
-user=> (decrypt-as-str secret lock)
+user=> (decrypt-as-str encrypted-secret lock)
 "one two three"
 
-user=> (def secret (encrypt-as-websafe "one two three" lock))
-#'user/secret
+user=> (def encrypted-secret (encrypt-as-base64 secret lock))
+#'user/encrypted-secret
 
-user=> secret
+user=> encrypted-secret
 "UFD3vAmm5Rc3xPnXcQUJs3yO3069NtlzjJoRA2egyyo="
 
-user=> (decrypt-from-websafe secret lock)
+user=> (decrypt-from-base64 encrypted-secret lock)
 "one two three"
 ```
 
