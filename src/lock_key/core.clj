@@ -64,8 +64,7 @@
   "Symmetrically encrypts value with encryption-key, returning a base64 encoded string, such that it can be
   decrypted later with (decrypt-from-base64).
 
-  value          - (String/byte[]) the value to encrypt. Raises an AssertionError if value
-                    is an invalid type
+  value          - (String/byte[]) the value to encrypt.
   encryption-key - (String) the key with which to encrypt value with."
   [value encryption-key]
   (String. (base64/encode-bytes (encrypt value encryption-key))))
