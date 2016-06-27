@@ -7,7 +7,8 @@
    [lock-key.private.core :as private]
    [base64-clj.core :as base64])
   (:import
-    [javax.crypto Cipher]))
+   [javax.crypto Cipher]
+   [java.nio.charset Charset]))
 
 (defn encrypt
   "Symmetrically encrypts value with encryption-key, such that it can be
@@ -65,7 +66,7 @@
   ;; We encoded strings assuming UTF-8, irrepspective of the
   ;; locale. So to prevent surprises assume the bytes here are also
   ;; UTF-8.
-  (String. (decrypt value encryption-key) utf-8))
+  (String. (decrypt value encryption-key) ^Charset utf-8))
 
 (defn encrypt-as-base64
   "Symmetrically encrypts value with encryption-key, returning a base64 encoded string, such that it can be
