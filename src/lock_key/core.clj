@@ -3,6 +3,7 @@
   symmetric encryption in AES/CBC/PKCS5Padding mode."
   (:require
    [charset.bytes :refer [get-bytes utf8-bytes]]
+   [charset.core :refer [utf-8]]        ; (Charset/forName "UTF-8")
    [lock-key.private.core :as private]
    [base64-clj.core :as base64])
   (:import
@@ -29,6 +30,9 @@
   (if (empty? encryption-key)
     (throw (IllegalArgumentException. "Argument [encryption-key] must not be empty")))
 
+  ;; Note that strings are encoded to a byte array with UTF-8
+  ;; independent of the locale (or rather of the default charset)
+  ;; here:
   (let [value-bytes (if (string? value) (utf8-bytes value) value)
         iv-bytes (private/get-iv-bytes)
         cipher (private/get-cipher Cipher/ENCRYPT_MODE encryption-key iv-bytes)]
@@ -58,7 +62,10 @@
   value          - (byte[]) the value to decrypt
   encryption-key - (String) the key with which the value was encrypted"
   [value encryption-key]
-  (String. (decrypt value encryption-key)))
+  ;; We encoded strings assuming UTF-8, irrepspective of the
+  ;; locale. So to prevent surprises assume the bytes here are also
+  ;; UTF-8.
+  (String. (decrypt value encryption-key) utf-8))
 
 (defn encrypt-as-base64
   "Symmetrically encrypts value with encryption-key, returning a base64 encoded string, such that it can be
@@ -67,6 +74,7 @@
   value          - (String/byte[]) the value to encrypt.
   encryption-key - (String) the key with which to encrypt value with."
   [value encryption-key]
+  ;; String values will be UTF-8 encoded:
   (String. (base64/encode-bytes (encrypt value encryption-key))))
 
 (defn decrypt-from-base64
@@ -76,4 +84,5 @@
   value          - (String) the value to decrypt encoded as a base64 string
   encryption-key - (String) the key with which the value was encrypted"
   [value encryption-key]
+  ;; The resulting string will be decoded using UTF-8:
   (decrypt-as-str (base64/decode-bytes (get-bytes value)) encryption-key))
