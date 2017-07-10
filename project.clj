@@ -1,4 +1,4 @@
-(defproject lock-key "1.5.0"
+(defproject lock-key "1.6.0-SNAPSHOT"
   :description "Symmetric encryption wrappers for Clojure"
   :url "https://github.com/clavoie/lock-key"
   :license {:name "Eclipse Public License"
@@ -6,6 +6,7 @@
   :dependencies [[charset "1.2.1"]
                  [org.clojure/clojure "1.8.0"]
                  [base64-clj "0.1.1"]]
+  :deploy-repositories [["releases"  {:sign-releases false :url "https://clojars.org/repo"}]]
   :global-vars {*warn-on-reflection* true}
   :plugins [[lein-codox "0.10.3"]]  
   :codox {:src-dir-uri "http://github.com/clavoie/lock-key/blob/master/"
