@@ -2,10 +2,12 @@
   "Wrapper around the Java cryptography extensions in javax.crypto. Implements
   symmetric encryption in AES/CBC/PKCS5Padding mode."
   (:require
-   [charset.bytes :refer [get-bytes utf8-bytes]]
-   [lock-key.private.core :as private]
-   [base64-clj.core :as base64])
+            [charset.core :refer [default-charset]]
+            [charset.bytes :refer [get-bytes utf8-bytes]]
+            [lock-key.private.core :as private]
+            [base64-clj.core :as base64])
   (:import
+    [java.nio.charset Charset]
     [javax.crypto Cipher]))
 
 (defn encrypt
@@ -55,25 +57,34 @@
   "Decryptes a value which has been encrypted via (encrypt) and attempts to
   construct the decrypted value into a string.
 
-  value          - (byte[]) the value to decrypt
-  encryption-key - (String) the key with which the value was encrypted"
-  [value encryption-key]
-  (String. (decrypt value encryption-key)))
+  value              - (byte[]) the value to decrypt
+  encryption-key     - (String) the key with which the value was encrypted
+  (optional) charset - (Charset) decodes the array of bytes using a specified charset. if not specified uses the default charset"
+  ([value encryption-key]
+   (decrypt-as-str value encryption-key default-charset))
+  ([value encryption-key ^Charset charset]
+    (String. (decrypt value encryption-key) charset)))
 
 (defn encrypt-as-base64
   "Symmetrically encrypts value with encryption-key, returning a base64 encoded string, such that it can be
   decrypted later with (decrypt-from-base64).
 
-  value          - (String/byte[]) the value to encrypt.
-  encryption-key - (String) the key with which to encrypt value with."
-  [value encryption-key]
-  (String. (base64/encode-bytes (encrypt value encryption-key))))
+  value              - (String/byte[]) the value to encrypt.
+  encryption-key     - (String) the key with which to encrypt value with.
+  (optional) charset - (Charset) decodes the array of bytes using a specified charset. if not specified uses the default charset"
+  ([value encryption-key]
+   (encrypt-as-base64 value encryption-key default-charset))
+  ([value encryption-key ^Charset charset]
+   (String. (base64/encode-bytes (encrypt value encryption-key)) charset)))
 
 (defn decrypt-from-base64
   "Decryptes a value which has been encrypted via (encrypt-as-base64) and attempts to
   construct the decrypted value into a string.
 
-  value          - (String) the value to decrypt encoded as a base64 string
-  encryption-key - (String) the key with which the value was encrypted"
-  [value encryption-key]
-  (decrypt-as-str (base64/decode-bytes (get-bytes value)) encryption-key))
+  value              - (String) the value to decrypt encoded as a base64 string
+  encryption-key     - (String) the key with which the value was encrypted
+  (optional) charset - (Charset) decodes the array of bytes using a specified charset. if not specified uses the default charset"
+  ([value encryption-key]
+   (decrypt-from-base64 value encryption-key default-charset))
+  ([value encryption-key ^Charset charset]
+   (decrypt-as-str (base64/decode-bytes (get-bytes value)) encryption-key charset)))

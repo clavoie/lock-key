@@ -4,9 +4,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[charset "1.2.1"]
-                 [org.clojure/clojure "1.6.0"]
+                 [org.clojure/clojure "1.8.0"]
                  [base64-clj "0.1.1"]]
   :global-vars {*warn-on-reflection* true}
-  :plugins [[codox "0.8.13"]]
+  :plugins [[lein-codox "0.10.3"]]  
   :codox {:src-dir-uri "http://github.com/clavoie/lock-key/blob/master/"
           :src-linenum-anchor-prefix "L"})
