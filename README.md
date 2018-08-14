@@ -55,9 +55,3 @@ user=> (decrypt-from-base64 encrypted-secret lock)
 ## Documentation
 
 [API](http://clavoie.github.io/lock-key/)
-
-## License
-
-Copyright © 2014-2017 Chris LaVoie
-
-Distributed under the Eclipse Public License, the same as Clojure.
