@@ -11,6 +11,10 @@ Add the following dependency to your `project.clj` file:
 
 [![Clojars Project](http://clojars.org/lock-key/latest-version.svg)](http://clojars.org/lock-key)
 
+## Documentation
+
+[API](http://clavoie.github.io/lock-key/)
+
 ## Usage
 
 ```clojure
@@ -52,6 +56,3 @@ user=> (decrypt-from-base64 encrypted-secret lock)
 "one two three"
 ```
 
-## Documentation
-
-[API](http://clavoie.github.io/lock-key/)
